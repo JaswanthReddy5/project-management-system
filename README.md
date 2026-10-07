@@ -4,6 +4,19 @@ A full-stack project management system: a Next.js web app and an Expo (Android) 
 sharing one Express/PostgreSQL backend, one database, and one JWT-based auth system. A user
 registered on web can log in on mobile with the same account, and vice versa.
 
+## Live deployment
+
+| | |
+|---|---|
+| **Web** | https://pms-web-taupe.vercel.app |
+| **Backend API** | https://backend-production-a0bc3.up.railway.app/api |
+| **Backend health check** | https://backend-production-a0bc3.up.railway.app/health |
+| **GitHub repo** | https://github.com/JaswanthReddy5/project-management-system |
+| **Demo accounts** | `alice@example.com` / `Password123!` and `bob@example.com` / `Password123!` |
+
+Web is hosted on Vercel; backend + PostgreSQL are hosted on Railway. See
+[`docs/ASSESSMENT-CHECKLIST.md`](docs/ASSESSMENT-CHECKLIST.md) for the Android build status.
+
 ## 1. Overview
 
 - **Web**: Next.js 14 (App Router) + TypeScript + Tailwind CSS — login/register, dashboard,
@@ -259,5 +272,8 @@ Seeded via `pnpm prisma:seed` (see §11):
 
 ## 25. Live URLs
 
-Not yet deployed — see [`docs/ASSESSMENT-CHECKLIST.md`](docs/ASSESSMENT-CHECKLIST.md) for exact
-deployment status and the account authorization required to publish live URLs.
+- Web: https://pms-web-taupe.vercel.app
+- Backend API: https://backend-production-a0bc3.up.railway.app/api
+- GitHub: https://github.com/JaswanthReddy5/project-management-system
+
+Android APK build status: see [`docs/ASSESSMENT-CHECKLIST.md`](docs/ASSESSMENT-CHECKLIST.md).

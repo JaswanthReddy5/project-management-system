@@ -120,47 +120,56 @@ would run on a device/emulator, but a live tap-through was not visually observed
 
 | Requirement | Status |
 |---|---|
-| Public GitHub repository | ⬜ **Not yet done — requires your authorization.** See below. |
-| Live web URL | ⬜ **Not yet done — requires your authorization.** See below. |
-| Live backend URL | ⬜ **Not yet done — requires your authorization.** See below. |
-| Android APK / Expo distribution | ⬜ **Not yet done — requires your authorization.** See below. |
-| 5-minute demo recording | ⬜ Script provided in the final report; recording itself is a manual action for you to perform. |
+| Public GitHub repository | ✅ https://github.com/JaswanthReddy5/project-management-system |
+| Live web URL | ✅ https://pms-web-taupe.vercel.app (Vercel) — verified in-browser: login → dashboard renders live production data |
+| Live backend URL | ✅ https://backend-production-a0bc3.up.railway.app (Railway, Dockerfile build + managed Postgres) — `/health` returns 200, full auth/project/task/dashboard flow smoke-tested against it |
+| Android APK / Expo distribution | ⏳ EAS build submitted (`eas build --platform android --profile preview`); see build link below for current status |
+| 5-minute demo recording | ⬜ Script provided in the final report; recording itself is a manual action for you to perform |
 
 ---
 
-## Deployment: what's done vs. what needs your authorization
+## Deployment: what was done and how
 
-**Done in this environment (no external account needed):**
-- Full monorepo, backend, web, mobile code — complete and tested locally.
-- Local Postgres via Docker Compose, migrated and seeded.
-- Backend Docker image builds and runs correctly against Postgres in Docker Compose
-  (verified: health check + register endpoint both returned success from the containerized
-  backend).
-- `git init` was **not** yet run / no commits made, pending your go-ahead (see below) — this
-  workspace was not a git repo at the start, and creating a *public* GitHub repository is an
-  action with real external visibility, so it was deliberately left for your explicit
-  confirmation rather than assumed.
+All deployment steps below were executed directly in this environment, with explicit
+confirmation from you before each external-account action (GitHub push, Railway resource
+creation/deletion, Expo login):
 
-**Requires your authorization to proceed — tell me which of these you'd like me to do, and
-provide the listed credential/account where applicable:**
+1. **GitHub** — repo created via `gh repo create` (already-authenticated `gh` CLI) and the
+   initial commit pushed. No secrets committed — verified `.env` returns 404 on the repo API
+   before reporting this done.
+2. **Database + backend hosting (Railway)** — you ran `railway login` yourself; a managed
+   Postgres service and a `backend` service were provisioned in a new Railway project. The
+   backend is deployed from `apps/backend/Dockerfile` via `railway up --path-as-root`
+   (not git-auto-deploy, since the Dockerfile lives in a subdirectory and Railway's
+   git-connected build defaults to the repo root — this was discovered when an env-var change
+   auto-triggered a root-directory rebuild that failed; the GitHub source was disconnected from
+   the service afterward to prevent recurrence, and deploys are now triggered manually via
+   `railway up`). `DATABASE_URL` is wired via Railway's `${{Postgres.DATABASE_URL}}` variable
+   reference; `JWT_SECRET` is a freshly generated 96-character random hex string, set only as a
+   Railway environment variable, never committed.
+3. **Web hosting (Vercel)** — the Vercel MCP connection was already authenticated to your
+   account. Project created linked to the GitHub repo with `rootDirectory: apps/web`,
+   `NEXT_PUBLIC_API_URL` set to the Railway backend URL, and deployment protection (Vercel SSO
+   gating) explicitly disabled so the demo URL is publicly reachable without a Vercel login.
+4. **CORS** — the backend's `WEB_ORIGIN` was updated to the live Vercel URL after it was known,
+   which triggers a redeploy; verified with a CORS preflight request showing
+   `access-control-allow-origin: https://pms-web-taupe.vercel.app`.
+5. **Expo/EAS (Android)** — you ran `eas login` yourself (browser device auth); the project was
+   linked (`eas init --account jaswanth12345`), `apps/mobile/eas.json` was added with a
+   `preview` profile (APK output) pointing `EXPO_PUBLIC_API_URL` at the live Railway backend,
+   and a build was submitted via `eas build --platform android --profile preview`.
 
-1. **GitHub** — I can run `git init`, create the initial commit, and push to a new repository
-   if you give me a GitHub repo URL (or ask me to create one via `gh repo create`, which needs
-   you to already be authenticated with `gh auth login` in this environment, or you can create
-   the empty repo yourself and share the URL).
-2. **Database hosting** (Neon / Supabase / Railway Postgres / other) — needs an account on your
-   chosen provider; once you share a `DATABASE_URL` for a hosted instance, I will run
-   `prisma migrate deploy` against it.
-3. **Backend hosting** (Render / Railway / Fly.io) — needs an account; once created, I need you
-   to either grant CLI/API access or walk through the provider's dashboard with the environment
-   variables documented in `README.md` §8 (`DATABASE_URL`, `JWT_SECRET`, `WEB_ORIGIN`, etc.).
-4. **Web hosting (Vercel)** — needs an account; once connected, set `NEXT_PUBLIC_API_URL` to
-   the deployed backend URL from step 3.
-5. **Expo/EAS account** — needed to run `eas build --platform android` and produce a real APK.
-   Free tier is sufficient. Run `eas login` yourself (interactive device auth) or share an Expo
-   access token.
+**One cleanup action required your confirmation mid-flight**: an earlier `railway add --database
+postgres` call was accidentally run twice, creating a duplicate unused Postgres service
+(`Postgres-atLp`). This was flagged to you explicitly and deleted only after you confirmed.
 
-Once any of the above are authorized, I will configure production environment variables, run
-the deploy, and then re-run the end-to-end smoke test (register → login → create project →
-create task → dashboard → logout → mobile connectivity) against the live URLs before reporting
-them as done — not before.
+**Post-deploy verification performed** (not just "should work"):
+- `curl` to the Railway backend's `/health` → `200`.
+- Full register → login → dashboard curl session against the live backend.
+- Production database seeded with the same demo accounts/projects/tasks as local
+  (`alice@example.com` / `bob@example.com`, both `Password123!`) via the live public API, since
+  Railway's internal Postgres hostname isn't reachable from outside its network — the seed
+  script's effect was reproduced through the same `/api/auth/register`, `/api/projects`,
+  `/api/tasks` endpoints the real clients use.
+- Logged into the **live Vercel URL** in an actual browser (not just curl) and confirmed the
+  dashboard renders the correct, live production stats fetched from the Railway backend.

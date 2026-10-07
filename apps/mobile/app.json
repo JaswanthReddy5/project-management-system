@@ -9,16 +9,28 @@
     "splash": {
       "backgroundColor": "#3568f5"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "android": {
       "package": "com.pms.mobile",
       "adaptiveIcon": {
         "backgroundColor": "#3568f5"
       }
     },
-    "plugins": ["expo-router", "expo-secure-store"],
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ],
     "extra": {
-      "apiUrl": "http://10.0.2.2:4000/api"
-    }
+      "apiUrl": "http://10.0.2.2:4000/api",
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "5860aab1-1d1d-4777-8a1b-f0504cb1cfad"
+      }
+    },
+    "owner": "jaswanth12345"
   }
 }
