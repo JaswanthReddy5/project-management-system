@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pms_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pms_user
+      POSTGRES_PASSWORD: pms_password
+      POSTGRES_DB: pms_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pms_user -d pms_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./apps/backend
+    container_name: pms_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://pms_user:pms_password@postgres:5432/pms_dev?schema=public"
+      JWT_SECRET: "docker-compose-dev-secret-change-me"
+      JWT_EXPIRES_IN: "7d"
+      PORT: 4000
+      NODE_ENV: production
+      WEB_ORIGIN: "http://localhost:3000"
+    ports:
+      - "4000:4000"
+
+volumes:
+  pgdata:

@@ -1,0 +1,60 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# env
+.env
+.env.*
+!.env.example
+!.env.test
+
+# build output
+dist/
+build/
+.next/
+out/
+.expo/
+.expo-shared/
+web-build/
+*.tsbuildinfo
+
+# testing
+coverage/
+
+# prisma
+apps/backend/prisma/dev.db
+apps/backend/prisma/*.db
+
+# logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# expo / eas
+apps/mobile/.expo/
+apps/mobile/android/
+apps/mobile/ios/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# docker volumes
+pgdata/
+
+# misc
+.turbo/
+.cache/

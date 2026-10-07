@@ -1,0 +1,32 @@
+{
+  "name": "project-management-system",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Full-stack project management system (web + mobile + backend) sharing one PostgreSQL database.",
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "18.3.12",
+      "@types/react-dom": "18.3.1"
+    }
+  },
+  "scripts": {
+    "dev:backend": "pnpm --filter @pms/backend dev",
+    "dev:web": "pnpm --filter @pms/web dev",
+    "dev:mobile": "pnpm --filter @pms/mobile start",
+    "build:backend": "pnpm --filter @pms/backend build",
+    "build:web": "pnpm --filter @pms/web build",
+    "test:backend": "pnpm --filter @pms/backend test",
+    "lint:backend": "pnpm --filter @pms/backend lint",
+    "lint:web": "pnpm --filter @pms/web lint",
+    "typecheck:backend": "pnpm --filter @pms/backend typecheck",
+    "typecheck:web": "pnpm --filter @pms/web typecheck",
+    "typecheck:mobile": "pnpm --filter @pms/mobile typecheck",
+    "db:migrate": "pnpm --filter @pms/backend prisma:migrate",
+    "db:seed": "pnpm --filter @pms/backend prisma:seed",
+    "db:studio": "pnpm --filter @pms/backend prisma:studio"
+  }
+}

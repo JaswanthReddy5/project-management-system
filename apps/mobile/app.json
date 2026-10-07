@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "PMS Mobile",
+    "slug": "pms-mobile",
+    "scheme": "pmsmobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#3568f5"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "android": {
+      "package": "com.pms.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#3568f5"
+      }
+    },
+    "plugins": ["expo-router", "expo-secure-store"],
+    "extra": {
+      "apiUrl": "http://10.0.2.2:4000/api"
+    }
+  }
+}
